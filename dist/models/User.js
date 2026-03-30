@@ -32,14 +32,22 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const UserSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
     image: { type: String, required: true },
-    role: { type: String, required: true, enum: ['user', 'admin'], default: 'user' },
+    role: { type: String, required: true, enum: ['customer', 'admin', 'rider', 'seller'], default: 'customer' },
 }, {
     timestamps: true,
 });
+UserSchema.methods.comparePassword = async function (password) {
+    return bcrypt_1.default.compare(password, this.password);
+};
 exports.default = mongoose_1.default.model('User', UserSchema);
