@@ -12,7 +12,7 @@ export interface IUser extends Document {
 
 export interface Role extends Document {
     name: string;
-    role: 'customer' | 'admin' | 'rider' | 'seller';
+    role: 'customer' | 'admin' | 'rider' | 'seller' | null;
 }
 
 const UserSchema: Schema = new Schema({
@@ -20,7 +20,7 @@ const UserSchema: Schema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     image: { type: String, required: true },
-    role: { type: String, required: true, enum: ['customer', 'admin', 'rider', 'seller'], default: 'customer' },
+    role: { type: String, enum: ['customer', 'admin', 'rider', 'seller'], default: null },
 }, {
     timestamps: true,
 });

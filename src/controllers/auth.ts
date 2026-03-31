@@ -24,7 +24,7 @@ export const login = TryCatch(async (req, res) => {
     const { email, name, picture } = userResponse.data;
     let user = await User.findOne({ email });
     if (!user) {
-        user = new User({ name, email, password: 'google', image: picture, role: 'customer' });
+        user = new User({ name, email, password: 'google', image: picture, role: null });
         await user.save();
     }
     const token = jwt.sign({ user }, process.env.JWT_SECRET!, { expiresIn: '30d' });
@@ -48,9 +48,9 @@ export const signup = TryCatch(async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const newUser = new User({ name, email, password: hashedPassword, image: picture, role: 'customer' });
+    const newUser = new User({ name, email, password: hashedPassword, image: picture, role: null });
     await newUser.save();
-    const token = jwt.sign({ user }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    const token = jwt.sign({ user: newUser }, process.env.JWT_SECRET!, { expiresIn: '30d' });
     return res.status(201).json({ user: newUser, token });
 });
 
@@ -72,7 +72,7 @@ export const updateRole = TryCatch(async (req: AuthenticatedRequest, res) => {
     user.role = role;
     await user.save();
 
-    const token = jwt.sign({ user }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    const token = jwt.sign({ user }, process.env.JWT_SECRET!, { expiresIn: '30d' });
     return res.status(200).json({ user, token });
 })
 
